@@ -1,0 +1,13 @@
+# Ignorar pastas de dependências
+/vendor/
+
+# Ignorar arquivos temporários e logs
+*.log
+*.tmp
+
+# Ignorar arquivos de configuração sensíveis (se você criar um)
+.env
+
+# Ignorar arquivos de upload (arquivos de nota fiscal e imagem dos equipamentos)
+# Você não deve versionar arquivos de upload de usuários no Git!
+/uploads/
