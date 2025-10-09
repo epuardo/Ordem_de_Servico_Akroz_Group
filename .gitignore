@@ -1,13 +1,34 @@
-# Ignorar pastas de dependências
+# -----------------------------------------------
+# 1. Ignorar dependências do Composer (CRÍTICO!)
+# -----------------------------------------------
+# A pasta 'vendor' deve ser reconstruída no servidor usando 'composer install'.
 /vendor/
 
-# Ignorar arquivos temporários e logs
-*.log
+# -----------------------------------------------
+# 2. Ignorar uploads de usuário e arquivos temporários
+# -----------------------------------------------
+# NUNCA versionar arquivos carregados por usuários (NF, imagens de equipamento).
+/uploads/
 *.tmp
+*.log
+*.bak
 
-# Ignorar arquivos de configuração sensíveis (se você criar um)
+# -----------------------------------------------
+# 3. Ignorar configurações de ambiente e segurança
+# -----------------------------------------------
+# Arquivo .env contém senhas e chaves SMTP. Ele DEVE ser ignorado.
 .env
 
-# Ignorar arquivos de upload (arquivos de nota fiscal e imagem dos equipamentos)
-# Você não deve versionar arquivos de upload de usuários no Git!
-/uploads/
+# -----------------------------------------------
+# 4. Ignorar configurações IDE/Sistema
+# -----------------------------------------------
+# Configurações do ambiente de desenvolvimento (VS Code, PHPStorm, etc.)
+.idea/
+.vscode/
+
+# Ignorar o diretório de dados do Mac OS X (se você também usar Mac)
+.DS_Store
+
+# Ignorar thumbs.db e desktop.ini no Windows
+Thumbs.db
+desktop.ini
