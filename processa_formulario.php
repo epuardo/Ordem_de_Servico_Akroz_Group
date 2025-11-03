@@ -177,7 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->Host       = 'smtp.gmail.com'; 
             $mail->SMTPAuth   = true;
             $mail->Username   = 'manutencaoakrozgroup@gmail.com'; 
-            $mail->Password   = 'dzbs rmfn fodv guih'; // Sua senha ou App Password
+            $mail->Password   = 'umix kaxz eilw rrfx'; // Sua senha ou App Password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
             $mail->CharSet    = 'UTF-8';
