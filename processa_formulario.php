@@ -184,7 +184,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             // Remetente e Destinatário
             $mail->setFrom('manutencaoakrozgroup@gmail.com', 'Ordem de Servico');
+            $mail->addAddress($email_cliente, $dados['nome_cliente'] ?? 'Cliente');
+
             $mail->addAddress('jose.santos@jimibrasil.com.br', 'Jose Eduardo');
+            $mail->addBCC('jose.santos@jimibrasil.com.br', 'Jose Eduardo');
 
             // 🌟 PASSO CRÍTICO 1: INCORPORAR A LOGO NO E-MAIL
             if (file_exists($CAMINHO_LOGO_SERVIDOR)) {
