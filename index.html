@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Ordem de Serviço - Manutenção de Equipamentos</title>
+<style>
+    /* Reset básico para melhor controle */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body { 
+        font-family: 'Segoe UI', Arial, sans-serif; /* Fonte mais moderna */
+        background: linear-gradient(to bottom, #e6e3ff, #0a2c3f); 
+        min-height: 100vh;
+        margin: 0; 
+        padding: 30px 0; /* Mais padding no topo e base */
+        overflow-x: hidden;
+        color: #333; /* Cor de texto padrão mais escura */
+        line-height: 1.6;
+    }
+
+    .container { 
+        max-width: 1200px; /* Um pouco mais largo para telas grandes */
+        width: 95%; /* Ocupa 95% da tela em dispositivos menores */
+        margin: 0 auto;
+    }
+
+    .form-section { 
+        margin-bottom: 25px; 
+        padding: 25px; 
+        border: 1px solid #e0e0e0; 
+        border-radius: 8px; 
+        background-color: #ffffff; 
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+    }
+    .form-section h2 {
+        color: #17445f;
+        margin-bottom: 20px; 
+        border-bottom: 2px solid #e0e0e0; 
+        padding-bottom: 10px;
+    }
+
+    .form-group { 
+        margin-bottom: 15px; 
+    }
+
+    label { 
+        display: block; 
+        margin-bottom: 8px; 
+        font-weight: bold; 
+        color: #555; 
+    }
+
+    input[type="text"], 
+    input[type="email"], 
+    textarea, 
+    select { 
+        width: 100%; 
+        padding: 10px 12px; /* Mais padding nos campos */
+        border: 1px solid #ccc; /* Borda padrão */
+        border-radius: 5px; /* Bordas arredondadas */
+        box-sizing: border-box; 
+        font-size: 1em; /* Tamanho de fonte padrão */
+        transition: border-color 0.2s, box-shadow 0.2s; /* Transição suave */
+    }
+
+    input[type="text"]:focus, 
+    input[type="email"]:focus, 
+    textarea:focus, 
+    select:focus {
+        border-color: #0084ff; 
+        box-shadow: 0 0 5px rgba(0, 132, 255, 0.3); 
+        outline: none; 
+    }
+
+    textarea {
+        resize: vertical; 
+        min-height: 80px; 
+    }
+
+    table { 
+        width: 100%; 
+        border-collapse: collapse; 
+        margin-top: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Sombra suave para a tabela */
+        border-radius: 5px;
+        overflow: hidden; /* Garante que as bordas arredondadas funcionem na tabela */
+    }
+
+    th, td { 
+        border: 1px solid #e0e0e0; /* Borda da célula mais suave */
+        padding: 12px 10px; /* Mais padding nas células */
+        text-align: left; 
+        vertical-align: top; /* Alinha conteúdo ao topo */
+        font-size: 0.95em;
+    }
+
+    th { 
+        background-color: #eef1f6; /* Fundo mais claro para o cabeçalho */
+        color: #17445f;
+        font-weight: bold;
+    }
+    
+    td:last-child {
+        text-align: center; /* Centraliza botões de ação na última coluna */
+    }
+
+    .btn-group { 
+        margin-top: 30px; /* Mais espaço acima do grupo de botões */
+        text-align: center; /* Centraliza os botões */
+        display: flex;
+        justify-content: center;
+        gap: 15px; /* Espaço entre os botões */
+    }
+
+    .btn { 
+        padding: 12px 25px; /* Mais padding nos botões */
+        border: none; 
+        cursor: pointer; 
+        border-radius: 6px; /* Bordas mais arredondadas */
+        font-size: 1.05em; /* Fonte um pouco maior */
+        font-weight: bold;
+        transition: background-color 0.3s ease, transform 0.2s ease; /* Transições suaves */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra suave para os botões */
+    }
+
+    .btn:hover {
+        transform: translateY(-2px); /* Efeito de levantar no hover */
+    }
+
+    .btn-add { 
+        background-color: #17445f; 
+        color: white; 
+    }
+    .btn-add:hover {
+        background-color: #0e2a3b; /* Tom mais escuro no hover */
+    }
+
+    .btn-remove { 
+        background-color: #f44336; 
+        color: white; 
+    }
+    .btn-remove:hover {
+        background-color: #d32f2f; /* Tom mais escuro no hover */
+    }
+
+    .btn-submit { 
+        background-color: #0084ff; 
+        color: white; 
+    }
+    .btn-submit:hover {
+        background-color: #006bb3; /* Tom mais escuro no hover */
+    }
+
+    .btn-pdf {
+        background-color: #d30d0d; 
+        color: white; 
+    }
+    .btn-pdf:hover {
+        background-color: #a00a0a; /* Tom mais escuro no hover */
+    }
+
+    /* Estilo para Custom File Input */
+    .hidden-file-input {
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        position: absolute;
+        z-index: -1;
+    }
+
+    .custom-file-label {
+        display: block;
+        cursor: pointer;
+        background-color: #f0f8ff; /* Fundo mais claro para os inputs de arquivo */
+        border: 2px dashed #a0c0e0; /* Borda pontilhada mais azulada */
+        padding: 12px;
+        text-align: center;
+        color: #0056b3; /* Cor do texto azul mais forte */
+        transition: background-color 0.2s, border-color 0.2s;
+        border-radius: 5px;
+        font-size: 0.9em;
+    }
+
+    .custom-file-label:hover {
+        background-color: #e0f2ff; /* Tom mais claro no hover */
+        border-color: #0056b3;
+    }
+
+    .file-list {
+        font-size: 0.85em;
+        color: #007BFF;
+        margin-top: 8px;
+        word-wrap: break-word;
+        padding: 5px;
+        background-color: #e9f5ff; /* Fundo sutil para a lista de arquivos */
+        border-radius: 3px;
+    }
+
+    /* Logo */
+    .logo-container {
+        text-align: center; 
+        margin-bottom: 30px; /* Mais espaço abaixo da logo */
+        padding-top: 15px; 
+    }
+
+    .logo-image {
+        max-width: 350px; /* Levemente menor, para focar no conteúdo */
+        height: auto;
+        display: block;
+        margin-left: auto; 
+        margin-right: auto; 
+        border-radius: 5px; /* Levemente arredondada */
+    }
+
+    /* Seção de Orientações Específicas */
+    .form-section[style*="border: 2px solid #17445f"] { /* Mantém a borda específica */
+        background-color: #e9f2f8; /* Fundo azul claro para a seção de orientações */
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* Sombra mais destacada */
+    }
+    .form-section[style*="border: 2px solid #17445f"] h2 {
+        color: #17445f;
+        font-size: 1.8em;
+        margin-bottom: 25px;
+        border-bottom: 3px solid #17445f; /* Borda mais forte */
+        padding-bottom: 12px;
+        text-align: center;
+    }
+    .form-section[style*="border: 2px solid #17445f"] h3 {
+        color: #17445f;
+        font-size: 1.2em;
+        margin-top: 25px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px; 
+    }
+    .form-section[style*="border: 2px solid #17445f"] h3::before {
+        content: ' '; 
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        vertical-align: middle;
+    }
+    .form-section[style*="border: 2px solid #17445f"] h3:nth-of-type(1)::before {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2317445f"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>');
+    }
+    .form-section[style*="border: 2px solid #17445f"] h3:nth-of-type(2)::before {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2317445f"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>');
+    }
+    .form-section[style*="border: 2px solid #17445f"] h3:nth-of-type(3)::before {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2317445f"><path d="M14 6H4v14h16V8h-6zm0-2h6.5L14 1.5V4z"/></svg>');
+    }
+    .form-section[style*="border: 2px solid #17445f"] h3:nth-of-type(4)::before {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2317445f"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>');
+    }
+    .form-section[style*="border: 2px solid #17445f"] h3:nth-of-type(5)::before {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2317445f"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>');
+    }
+
+    .form-section[style*="border: 2px solid #17445f"] p, 
+    .form-section[style*="border: 2px solid #17445f"] ul, 
+    .form-section[style*="border: 2px solid #17445f"] ol {
+        margin-bottom: 10px;
+        color: #444;
+    }
+    .form-section[style*="border: 2px solid #17445f"] li {
+        margin-bottom: 5px;
+    }
+
+    
+    #loading-overlay {
+        border-radius: 8px; 
+    }
+
+    label:has(+ input[required])::before,
+    label:has(+ select[required])::before,
+    label:has(+ textarea[required])::before {
+    content: '* '; /* Insere o asterisco e um espaço */
+    color: #ff4d4d; /* Vermelho vibrante */
+    font-weight: bold;
+    margin-right: 2px; /* Espaçamento leve entre o asterisco e o texto */
+}
+
+    
+    @media (max-width: 768px) {
+        .container {
+            width: 98%;
+            padding: 0 10px;
+        }
+        .form-section {
+            padding: 15px;
+        }
+        th, td {
+            padding: 8px 6px;
+            font-size: 0.85em;
+        }
+        .btn-group {
+            flex-direction: column; /* Botões empilham em telas pequenas */
+            gap: 10px;
+        }
+        .btn {
+            width: 100%; /* Botões ocupam a largura total */
+            font-size: 1em;
+        }
+        .logo-image {
+            max-width: 250px;
+        }
+        .form-section[style*="border: 2px solid #17445f"] h2 {
+            font-size: 1.5em;
+        }
+        .form-section[style*="border: 2px solid #17445f"] h3 {
+            font-size: 1.1em;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay" style="
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0, 0, 0, 0.7); 
+    color: white; 
+    display: none; /* Começa escondido */
+    justify-content: center; 
+    align-items: center; 
+    z-index: 1000; 
+    font-size: 24px;
+    flex-direction: column;
+">
+    <p>Aguarde, e-mail sendo enviado...</p>
+    </div>
+
+    
+    <div class="container">
+    
+    <div class="logo-container" style="text-align: center; margin-bottom: 20px;">
+         <img src="Akrozpng.png" alt="Logo Akrozz" style="max-width: 250px; height: auto;">
+    </div>
+    </div>
+
+<div class="container">
+
+    <h1 style="text-align: center; color: rgb(255, 255, 255)">Ordem de Serviço - Manutenção de Equipamentos</h1>
+
+    <div class="form-section" style="border: 2px solid #17445f;">
+        <h2 style="color: #17445f;">Orientações Gerais</h2>
+        
+        <h3 style="font-weight: bold; margin-top: 15px;"> Endereço para Envio das Manutenções:</h3>
+        <p style="margin-left: 20px; line-height: 1.5;">
+            <strong>NTC SERVICE LTDA</strong> <br>
+            Logradouro: Avenida Francisco Matarazzo <br>
+            Número: 1400 <br>
+            Complemento: TORRE MILANO SALA 191 <br>
+            Bairro: Água Branca <br>
+            Cidade: São Paulo  <br>
+            UF - SP <br>
+            CEP: 05001100 <br>
+            CPF/CNPJ: 02.663.553/0001-50
+        </p>
+
+        <h3 style="font-weight: bold; margin-top: 15px;"> Documentação Obrigatória (Nota Fiscal):</h3>
+        <p style="margin-left: 20px;">
+            É <strong>obrigatório</strong> que todos os equipamentos enviados para manutenção estejam acompanhados de uma Nota Fiscal de Remessa para Conserto, utilizando os seguintes códigos fiscais (CFOP):
+            <ul style="margin-top: 5px; margin-left: 20px;">
+    <li><strong>CFOP 5915 –</strong> Para clientes localizados dentro do estado de São Paulo.</li>
+    <li><strong>CFOP 6915 –</strong> Para clientes localizados fora do estado de São Paulo.</li>
+</ul>
+            <span style="color: #d30d0d; font-weight: bold;">Atenção:</span> Equipamentos enviados sem a devida Nota Fiscal serão devolvidos ao remetente sem a realização do serviço de manutenção.
+        </p>
+
+        <h3 style="font-weight: bold; margin-top: 20px;"> Instruções para a Solicitação de Manutenção:</h3>
+        <ol style="margin-left: 20px; line-height: 1.5;">
+            <li>Baixe o formulário em PDF da solicitação de manutenção.</li>
+            <li>Imprima uma via e envie junto com o equipamento e a Nota Fiscal de Remessa para Conserto.</li>
+            <li>Clique no botão <strong>"Enviar por E-mail"</strong> para mandar um email com as informações inseridas diretamente para o time de manutenção.</li>
+            <li>Após o envio, é só aguardar o contato da nossa equipe! 😄</li>
+        </ol>
+        
+        <h3 style="font-weight: bold; margin-top: 20px;"> Instruções para o Preenchimento da Solicitação:</h3>
+        <ol style="margin-left: 20px; line-height: 1.5;">
+            <li>Preencha todos os campos obrigatórios marcados.</li>
+            <li>Certifique-se de enviar o arquivo PDF correto da NF de remessa.</li>
+            <li>Ao realizar a <strong>descrição do problema</strong>, relate de forma detalhada o que está ocorrendo com o equipamento em questão. Recomenda-se realizar esta descrição com o auxílio de um técnico de suporte! 
+                <p style="font-size: 0.9em; margin-top: 5px;">Para mais informações, por gentileza entrar em contato com o <strong>Suporte Akroz Telematics</strong> ou <strong>Suporte Jimi Brasil</strong>.</p>
+            </li>
+        </ol>
+        
+        <h3 style="font-weight: bold; margin-top: 20px;"> Prazo para Manutenção:</h3>
+        <p style="margin-left: 20px;">
+            O prazo para a realização da manutenção dos equipamentos é de <strong>30 dias</strong>, podendo se estender caso seja feito o envio de mais de cinco equipamentos de uma única vez.
+        </p>
+    </div>
+
+    <form id="ordem-servico-form" action="processa_formulario.php" method="post" enctype="multipart/form-data">
+        
+        <div class="form-section">
+            <h2>Informações do Cliente</h2>
+            <div class="form-group">
+                <label for="empresa_selecao">Fornecedor:</label>
+                <select id="empresa_selecao" name="empresa_selecao" required>
+                <option value="" disabled selected>Selecione o Fornecedor</option>
+                <option value="JimiIoT Brasil">JimiIoT Brasil</option>
+                <option value="Akroz Telematics">Akroz Telematics</option>
+            </select>
+        </div>
+            <div class="form-group">
+                <label for="nome_cliente">Nome do Cliente Responsável Pelo Envio:</label>
+                <input type="text" id="nome_cliente" name="nome_cliente" required>
+            </div>
+            <div class="form-group">
+                <label for="cnpj">CNPJ:</label>
+                <input type="text" id="cnpj" name="cnpj" required>
+            </div>
+            <div class="form-group">
+                <label for="empresa">Nome da Empresa:</label>
+                <input type="text" id="empresa" name="empresa" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="nf">Nota Fiscal de Remessa (PDF):</label>
+                <input type="file" id="nf" name="nf" accept="application/pdf" required>
+            </div>
+            <div class="form-group">
+            <label for="tecnico">Técnico Responsável por Autorizar o Envio:</label>
+            <select id="tecnico" name="tecnico" required disabled>
+            <option value="" selected>Selecione a Empresa primeiro</option>
+           </select>
+           
+           <div class="form-group">
+            <label for="protocolo">Protocolo de Atendimento</label>
+            <input type="text" id="protocolo" name="protocolo" required>
+           </div>
+        </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Informações dos Equipamentos</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Modelo</th>
+                        <th>IMEI</th>
+                        <th>Descrição do Problema</th>
+                        <th>Imagens</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela_equipamentos">
+                    </tbody>
+            </table>
+            <button type="button" class="btn btn-add" onclick="adicionarEquipamento()">Adicionar Equipamento</button>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" name="enviar_email" class="btn btn-submit">Enviar por E-mail</button>
+            <button type="submit" name="exportar_pdf" class="btn btn-pdf">Exportar PDF</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let equipamentoIndex = 0;
+
+    // --- NOVAS LISTAS DE OPÇÕES ---
+    const OPCOES_TECNICO = {
+        'JimiIoT Brasil': ['José Eduardo', 'Miguel', 'Murilo', 'Vinicius', 'Gabriel', 'Keila'],
+        'Akroz Telematics': ['Leonardo Dias', 'Mateus Azevedo', 'Ellen Fontes', 'Vinicius Ferraz']
+    };
+    
+    const OPCOES_MODELO = {
+        'JimiIoT Brasil': ['IP67', 'JC170', 'JC181', 'JC200', 'JC400', 'JC400AD', 'JC450', 'JC371', 'VL01', 'VL02', 'VL03', 'LL01', 'LL303'],
+        'Akroz Telematics': ['VL06', 'VC07', 'VL08','VL11', 'VL12', 'VCONE']
+    };
+    // --------------------------------
+
+    // Função de utilidade para atualizar o texto do label de arquivo
+    function updateFileName(input, fileListId, labelId, placeholder) {
+        const fileListDiv = document.getElementById(fileListId);
+        const label = document.getElementById(labelId);
+        if (input.files && input.files.length > 0) {
+            const files = Array.from(input.files).map(file => file.name).join(', ');
+            label.textContent = `${input.files.length} arquivo(s) selecionado(s)`;
+            fileListDiv.textContent = files;
+        } else {
+            label.textContent = placeholder;
+            fileListDiv.textContent = '';
+        }
+    }
+
+    // --- NOVA FUNÇÃO: CARREGA E CONTROLA CAMPOS ---
+    function carregarOpcoesETrocarEstado() {
+        const empresa = document.getElementById('empresa_selecao').value;
+        const tecnicoSelect = document.getElementById('tecnico');
+        const tabelaEquipamentos = document.getElementById('tabela_equipamentos');
+
+        const camposBloqueados = [
+            document.getElementById('nome_cliente'), 
+            document.getElementById('cnpj'), 
+            document.getElementById('email'), 
+            document.getElementById('nf')
+        ];
+        
+        // Desbloqueia ou Bloqueia os campos
+        const isJimi = empresa === 'JimiIoT Brasil';
+        const isAkroz = empresa === 'Akroz Telematics';
+        const deveDesbloquear = isJimi || isAkroz;
+
+        // Desbloqueia campos do cliente e NF
+        camposBloqueados.forEach(campo => campo.disabled = !deveDesbloquear);
+        tecnicoSelect.disabled = !deveDesbloquear;
+        
+        // Limpa a lista de técnicos e insere o placeholder
+        tecnicoSelect.innerHTML = '';
+        const placeholderTecnico = document.createElement('option');
+        placeholderTecnico.value = "";
+        placeholderTecnico.textContent = deveDesbloquear ? 'Selecione o Técnico' : 'Selecione a Empresa primeiro';
+        placeholderTecnico.disabled = true;
+        placeholderTecnico.selected = true;
+        tecnicoSelect.appendChild(placeholderTecnico);
+
+        // Popula a lista de Técnicos
+        if (deveDesbloquear) {
+            OPCOES_TECNICO[empresa].forEach(nome => {
+                const option = document.createElement('option');
+                option.value = nome;
+                option.textContent = nome;
+                tecnicoSelect.appendChild(option);
+            });
+        }
+
+        // 3. Atualiza os modelos em todas as linhas da tabela
+        const linhas = tabelaEquipamentos.getElementsByTagName('tr');
+        for (let i = 0; i < linhas.length; i++) {
+            const modeloSelect = linhas[i].querySelector(`[name$="[modelo]"]`);
+            if (modeloSelect) {
+                modeloSelect.disabled = !deveDesbloquear;
+                modeloSelect.innerHTML = '';
+                
+                const placeholderModelo = document.createElement('option');
+                placeholderModelo.value = "";
+                placeholderModelo.textContent = deveDesbloquear ? 'Selecione o modelo' : 'Selecione a Empresa primeiro';
+                placeholderModelo.disabled = true;
+                placeholderModelo.selected = true;
+                modeloSelect.appendChild(placeholderModelo);
+
+                if (deveDesbloquear) {
+                    OPCOES_MODELO[empresa].forEach(modelo => {
+                        const option = document.createElement('option');
+                        option.value = modelo;
+                        option.textContent = modelo;
+                        modeloSelect.appendChild(option);
+                    });
+                }
+            }
+        }
+    }
+    // --------------------------------
+
+    // Função para adicionar uma nova linha de equipamento
+    function adicionarEquipamento() {
+        const tabela = document.getElementById('tabela_equipamentos');
+        const novaLinha = tabela.insertRow();
+        novaLinha.id = 'equipamento-' + equipamentoIndex;
+        
+        // Verifica a empresa selecionada para configurar o SELECT
+        const empresa = document.getElementById('empresa_selecao').value;
+        const deveDesbloquear = (empresa === 'JimiIoT Brasil' || empresa === 'Akroz Telematics');
+        const opcoesModelos = deveDesbloquear ? OPCOES_MODELO[empresa] : [];
+        const disabledAttr = deveDesbloquear ? '' : 'disabled';
+        const placeholderText = deveDesbloquear ? 'Selecione o modelo' : 'Selecione a Empresa primeiro';
+
+        let optionsHTML = `<option value="" selected disabled>${placeholderText}</option>`;
+        opcoesModelos.forEach(modelo => {
+            optionsHTML += `<option value="${modelo}">${modelo}</option>`;
+        });
+
+
+        novaLinha.innerHTML = `
+            <td>
+                <select name="equipamentos[${equipamentoIndex}][modelo]" id="modelo-${equipamentoIndex}" required ${disabledAttr}>
+                    ${optionsHTML}
+                </select>
+            </td>
+            <td><input type="text" name="equipamentos[${equipamentoIndex}][imei]" required></td>
+            <td><textarea name="equipamentos[${equipamentoIndex}][problema]" rows="2" required></textarea></td>
+            
+            <td class="file-cell">
+                <label for="imagens-${equipamentoIndex}" class="custom-file-label" id="imagens-label-${equipamentoIndex}">
+                    Selecione ou arraste seus arquivos aqui!
+                </label>
+                <input type="file" 
+                       id="imagens-${equipamentoIndex}" 
+                       name="equipamentos[${equipamentoIndex}][imagens][]" 
+                       accept="image/*" 
+                       multiple
+                       class="hidden-file-input">
+                <div id="file-list-${equipamentoIndex}" class="file-list"></div>
+            </td>
+            
+            <td>
+                <button type="button" class="btn btn-remove" onclick="removerEquipamento('equipamento-${equipamentoIndex}')">Excluir</button>
+            </td>
+        `;
+        
+                const currentEquipamentoIndex = equipamentoIndex; 
+
+        
+        equipamentoIndex++; 
+
+        // Procura o elemento fileInput usando o ID exclusivo DENTRO da linha
+        const fileInput = novaLinha.querySelector(`#imagens-${currentEquipamentoIndex}`);
+        
+        if (fileInput) {
+            fileInput.addEventListener('change', () => updateFileName(
+                fileInput, 
+                `file-list-${currentEquipamentoIndex}`, 
+                `imagens-label-${currentEquipamentoIndex}`, 
+                "Selecione ou arraste seus arquivos aqui!"
+            ));
+        }
+    } 
+
+
+    // Função para remover uma linha de equipamento
+    function removerEquipamento(id) {
+        const tabelaBody = document.getElementById('tabela_equipamentos');
+        const linhas = tabelaBody.getElementsByTagName('tr');
+
+        if (linhas.length === 1) {
+            alert("O formulário deve ter no mínimo um equipamento listado.");
+            return;
+        }
+        
+        const linha = document.getElementById(id);
+        if (linha) {
+            linha.remove();
+        }
+    }
+
+    // Event listeners no carregamento da página
+    window.onload = function() {
+        adicionarEquipamento(); // Adiciona a primeira linha (bloqueada)
+        
+        // Inicializa o listener para a NF
+        const nfInput = document.getElementById('nf');
+        const nfLabel = document.getElementById('nf-label');
+        if (nfInput && nfLabel) {
+            nfInput.addEventListener('change', () => updateFileName(nfInput, 'nf-file-list', 'nf-label', "Selecione ou arraste o PDF da Nota Fiscal aqui!"));
+        }
+
+        // --- NOVO LISTENER: REAGE À MUDANÇA DA EMPRESA ---
+        document.getElementById('empresa_selecao').addEventListener('change', carregarOpcoesETrocarEstado);
+
+        // Bloqueia campos no início (garante que só a seleção da empresa funcione)
+        carregarOpcoesETrocarEstado(); 
+    };
+
+    // Script para o envio do formulário via AJAX
+    document.getElementById('ordem-servico-form').addEventListener('submit', function(event) {
+        // ... (Mantenha o seu bloco de envio AJAX aqui) ...
+        const clickedButton = event.submitter;
+        const loadingOverlay = document.getElementById('loading-overlay');
+
+        if (clickedButton && clickedButton.name === 'enviar_email') {
+            const nfInput = document.getElementById('nf');
+            if (!nfInput.files || nfInput.files.length === 0) {
+                alert("Por favor, selecione o PDF da Nota Fiscal para continuar.");
+                event.preventDefault();
+                return;
+            }
+
+            event.preventDefault();
+            loadingOverlay.style.display = 'flex';
+
+            const formData = new FormData(this);
+            formData.append('ajax_submit', '1');
+
+            fetch('processa_formulario.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    throw new TypeError('Resposta do servidor não é JSON. Talvez o PHP tenha gerado um erro.');
+                }
+            })
+            .then(data => {
+                loadingOverlay.style.display = 'none';
+                if (data.status === 'success') {
+                    alert(data.message);
+                    this.reset();
+                    equipamentoIndex = 0; 
+                    document.getElementById('tabela_equipamentos').innerHTML = '';
+                    adicionarEquipamento();
+                } else {
+                    alert('Erro: ' + data.message);
+                }
+            })
+            .catch(error => {
+                loadingOverlay.style.display = 'none';
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao enviar. Por favor, tente novamente.');
+            });
+        }
+    });
+</script>
+
+</body>
+
+</html>

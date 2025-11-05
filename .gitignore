@@ -1,0 +1,30 @@
+# -----------------------------------------------
+# 1. Ignorar dependências do Composer (CRÍTICO!)
+# -----------------------------------------------
+/vendor/
+
+# -----------------------------------------------
+# 2. Ignorar uploads de usuário e arquivos temporários
+# -----------------------------------------------
+/uploads/
+*.tmp
+*.log
+*.bak
+
+# -----------------------------------------------
+# 3. Ignorar configurações de ambiente e segurança
+# -----------------------------------------------
+.env
+
+# -----------------------------------------------
+# 4. Ignorar configurações IDE/Sistema
+# -----------------------------------------------
+.idea/
+.vscode/
+
+# Ignorar o diretório de dados do Mac OS X (se você também usar Mac)
+.DS_Store
+
+# Ignorar thumbs.db e desktop.ini no Windows
+Thumbs.db
+desktop.ini
