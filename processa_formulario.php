@@ -1,5 +1,7 @@
 <?php
 
+// Carrega o autoloader do Composer e os serviços de envio de email e geração de PDF
+
 require 'vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -18,7 +20,7 @@ $CAMINHO_LOGO_SERVIDOR = __DIR__ . '/Akrozpng.png';
 
 $LOGO_CID = 'logo_akroz';
 
-
+// Função para gerar o conteúdo HTML do e-mail e do PDF
 
 function gerarConteudoHTML($dados, $arquivos, $isPdf = false, $caminho_logo = null, $logo_cid = null) {
 
@@ -56,7 +58,7 @@ function gerarConteudoHTML($dados, $arquivos, $isPdf = false, $caminho_logo = nu
 
 
 
-    // HTML do Endereço (Apenas para PDF, ou E-mail se desejar manter)
+    // HTML do Endereço (Apenas para PDF)
 
     $endereco_manutencao_html = '
 
@@ -382,9 +384,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->setFrom($email_autenticacao, 'Ordem de Servico Akroz');
 
             $mail->addAddress($email_cliente, $dados['nome_cliente'] ?? 'Cliente');
-            $mail->addAddress('jose.santos@jimibrasil.com.br', 'Jimi Brasil');
+            $mail->addAddress('manutencao@jimibrasil.com.br', 'Manutencao Jimi Brasil');
 
-            // 🌟 PASSO CRÍTICO 1: INCORPORAR A LOGO NO E-MAIL
+            // Logo da Akroz no E-mail
 
             if (file_exists($CAMINHO_LOGO_SERVIDOR)) {
 
@@ -396,13 +398,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-            // Conteúdo
+            // Gerar o conteúdo HTML do e-mail
 
             $mail->isHTML(true);
 
             $mail->Subject = 'Nova Ordem de Servico de Manutencao';
-
-            // 🌟 PASSO CRÍTICO 2: GERA O HTML PASSANDO AS VARIÁVEIS DA LOGO
 
             $mail->Body     = gerarConteudoHTML($dados, $arquivos, false, $CAMINHO_LOGO_SERVIDOR, $LOGO_CID);
 
@@ -508,7 +508,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-        // 🌟 PASSO CRÍTICO 3: GERA O HTML PARA PDF (true) PASSANDO AS VARIÁVEIS DA LOGO
+        // Gera o conteúdo HTML para o PDF
 
         $html = gerarConteudoHTML($dados, $arquivos, true, $CAMINHO_LOGO_SERVIDOR, $LOGO_CID);
 

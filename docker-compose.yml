@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  formulario:
+    # 🚨 NOVO: Referenciando a imagem pelo nome 🚨
+    # Se você for subir a imagem para o Docker Hub, use: 'seu-usuario/formulario-manutencao'
+    image: formulario-manutencao
+    
+    # Você PODE manter o 'build: .' se quiser que ele construa a imagem 
+    # se ela não for encontrada, mas para referenciar uma imagem existente, 
+    # o 'image:' é suficiente. 
+    # Se for construir localmente a partir deste arquivo, 
+    # use o comando: docker compose build
+    
+    container_name: os-container
+    
+    # Mapeamento de portas: '8083' (porta da sua máquina) : '80' (porta interna do container)
+    ports:
+      - "8083:80"
+      
+    # Volumes mantidos (se você estiver desenvolvendo e quer edições instantâneas)
+    # volumes:
+    #   - .:/var/www/html
+      
+    # Se quiser passar o conteúdo do .env diretamente:
+    # env_file:
+    #   - .env
