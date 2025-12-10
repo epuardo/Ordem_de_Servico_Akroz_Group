@@ -393,6 +393,7 @@
         <ol style="margin-left: 20px; line-height: 1.5;">
             <li>Preencha todos os campos obrigatórios marcados.</li>
             <li>Certifique-se de enviar o arquivo PDF correto da NF de remessa.</li>
+            <li>Os arquivos anexados de NF e Imagens não podem exceder <strong>20MB</strong> cada.</li>
             <li>Ao realizar a <strong>descrição do problema</strong>, relate de forma detalhada o que está ocorrendo com o equipamento em questão. Recomenda-se realizar esta descrição com o auxílio de um técnico de suporte! 
                 <p style="font-size: 0.9em; margin-top: 5px;">Para mais informações, por gentileza entrar em contato com o <strong>Suporte Akroz Telematics</strong> ou <strong>Suporte Jimi Brasil</strong>.</p>
             </li>
@@ -433,10 +434,6 @@
                 <input type="email" id="email" name="email" required>
             </div>
             <div class="form-group">
-                <label for="nf">Nota Fiscal de Remessa (PDF):</label>
-                <input type="file" id="nf" name="nf" accept="application/pdf" required>
-            </div>
-            <div class="form-group">
             <label for="tecnico">Técnico Responsável por Autorizar o Envio:</label>
             <select id="tecnico" name="tecnico" required disabled>
             <option value="" selected>Selecione a Empresa primeiro</option>
@@ -448,6 +445,21 @@
            </div>
         </div>
         </div>
+
+        <div class="form-section">
+    <h2>Documentação</h2>
+    <div class="form-group">
+        <label for="nf">Nota Fiscal de Remessa (PDF):</label>
+        
+        <input type="file" id="nf" name="nf" accept="application/pdf" class="hidden-file-input" required>
+        
+        <label for="nf" class="custom-file-label" id="nf-label">
+            Clique para selecionar o PDF da Nota Fiscal!
+        </label>
+        
+        <div id="nf-file-list" class="file-list"></div>
+    </div>
+    </div>
 
         <div class="form-section">
             <h2>Informações dos Equipamentos</h2>
@@ -479,7 +491,7 @@
 
     // --- NOVAS LISTAS DE OPÇÕES ---
     const OPCOES_TECNICO = {
-        'JimiIoT Brasil': ['José Eduardo', 'Miguel', 'Murilo', 'Vinicius', 'Gabriel', 'Keila'],
+        'JimiIoT Brasil': ['José Eduardo', 'Miguel', 'Murilo', 'Vinicius', 'Jonas', 'Keila'],
         'Akroz Telematics': ['Leonardo Dias', 'Mateus Azevedo', 'Ellen Fontes', 'Vinicius Ferraz']
     };
     
@@ -654,22 +666,28 @@
     }
 
     // Event listeners no carregamento da página
-    window.onload = function() {
-        adicionarEquipamento(); // Adiciona a primeira linha (bloqueada)
-        
-        // Inicializa o listener para a NF
-        const nfInput = document.getElementById('nf');
-        const nfLabel = document.getElementById('nf-label');
-        if (nfInput && nfLabel) {
-            nfInput.addEventListener('change', () => updateFileName(nfInput, 'nf-file-list', 'nf-label', "Selecione ou arraste o PDF da Nota Fiscal aqui!"));
-        }
+// Event listeners no carregamento da página
+window.onload = function() {
+    adicionarEquipamento(); // Adiciona a primeira linha (bloqueada)
+    
+    // Inicializa o listener para a NF com os IDs CORRETOS
+    const nfInput = document.getElementById('nf');
+    
+    if (nfInput) {
+        nfInput.addEventListener('change', () => updateFileName(
+            nfInput, 
+            'nf-file-list', 
+            'nf-label', 
+            "Clique para selecionar o PDF da Nota Fiscal!" // Novo placeholder
+        ));
+    }
 
-        // --- NOVO LISTENER: REAGE À MUDANÇA DA EMPRESA ---
-        document.getElementById('empresa_selecao').addEventListener('change', carregarOpcoesETrocarEstado);
+    // --- LISTENER: REAGE À MUDANÇA DA EMPRESA ---
+    document.getElementById('empresa_selecao').addEventListener('change', carregarOpcoesETrocarEstado);
 
-        // Bloqueia campos no início (garante que só a seleção da empresa funcione)
-        carregarOpcoesETrocarEstado(); 
-    };
+    // Bloqueia campos no início (garante que só a seleção da empresa funcione)
+    carregarOpcoesETrocarEstado(); 
+};
 
     // Script para o envio do formulário via AJAX
     document.getElementById('ordem-servico-form').addEventListener('submit', function(event) {
@@ -722,6 +740,47 @@
             });
         }
     });
+
+function updateFileName(input, fileListId, labelId, placeholder) {
+    const fileListDiv = document.getElementById(fileListId);
+    const label = document.getElementById(labelId);
+    
+    
+    if (isFileTooLarge(input.files)) {
+        alert(`Erro: Um ou mais arquivos excedem o limite de ${MAX_SIZE_MB} MB. Por favor, remova os arquivos grandes.`);
+        
+        
+        input.value = ''; 
+        label.textContent = placeholder;
+        fileListDiv.textContent = 'ERRO: Arquivo(s) excedem 20MB.';
+        fileListDiv.style.color = 'red';
+        return; 
+    }
+    
+    fileListDiv.style.color = '#007BFF'; 
+    if (input.files && input.files.length > 0) {
+        const files = Array.from(input.files).map(file => file.name).join(', ');
+        label.textContent = `${input.files.length} arquivo(s) selecionado(s)`;
+        fileListDiv.textContent = files;
+    } else {
+        label.textContent = placeholder;
+        fileListDiv.textContent = '';
+    }
+}
+
+const MAX_SIZE_BYTES = 20 * 1024 * 1024; // 20MB em bytes
+const MAX_SIZE_MB = 20;
+
+function isFileTooLarge(files) {
+    if (!files || files.length === 0) return false;
+    
+    for (let i = 0; i < files.length; i++) {
+        if (files[i].size > MAX_SIZE_BYTES) {
+            return true; // Arquivo excede o limite
+        }
+    }
+    return false; // Todos os arquivos dentro do limite
+}
 </script>
 
 </body>

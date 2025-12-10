@@ -19,8 +19,8 @@ services:
       - "8083:80"
       
     # Volumes mantidos (se você estiver desenvolvendo e quer edições instantâneas)
-    # volumes:
-    #   - .:/var/www/html
+    volumes:
+       - .:/var/www/html
       
     # Se quiser passar o conteúdo do .env diretamente:
     # env_file:
