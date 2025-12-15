@@ -364,7 +364,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (empty($email_autenticacao) || empty($senha_autenticacao)) {
 
             $email_autenticacao = 'manutencaoakrozgroup@gmail.com'; 
-            $senha_autenticacao = 'umixkaxzeilwrrfx'; 
+            $senha_autenticacao = 'fhzywhcpzsissszq'; 
         }
             
             $mail->Username   = $email_autenticacao; // Seu e-mail de envio
