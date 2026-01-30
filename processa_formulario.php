@@ -84,7 +84,7 @@ function gerarConteudoHTML($dados, $arquivos, $isPdf = false, $caminho_logo = nu
 
                 CEP: 05001100 <br>
 
-                CPF/CNPJ: 02.663.553/0001-50
+                CPF/CNPJ: 40.430.203/0001-32
 
             </p>
 
