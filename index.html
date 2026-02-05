@@ -321,6 +321,60 @@
             font-size: 1.1em;
         }
     }
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 2000;
+}
+
+.modal-card {
+    background: white;
+    width: 90%; max-width: 800px;
+    max-height: 80vh;
+    border-radius: 10px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex; justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    color: #333;
+}
+
+.modal-footer {
+    padding: 15px;
+    border-top: 1px solid #eee;
+    text-align: right;
+}
+
+/* Tabela dentro do Modal */
+.tabela-precos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85em;
+    margin-top: 15px;
+}
+.tabela-precos th, .tabela-precos td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+.tabela-precos th { background-color: #f2f2f2; color: #17445f; }
+
+.btn-close {
+    background: none; border: none; font-size: 28px; cursor: pointer; color: #999;
+}
 </style>
 </head>
 <body>
@@ -410,6 +464,7 @@
 
             <strong>Obs.:</strong> O prazo poderá ser estendido caso haja o envio de mais de cinco equipamentos de uma única vez, em razão do volume e da complexidade do atendimento.<br>
         </p>
+        <p> Para mais informações consulte o nosso <a href=https://newtectelemetria-my.sharepoint.com/:b:/g/personal/administracao_akrozgroup_com_br/IQB3IHlhc76wS6eW8de4HdouAdezpgYum_FjyjV0vVo0Zfw?e=lHJMcm> Guia de Preenchimento</a></p>
     </div>
 
     <form id="ordem-servico-form" action="processa_formulario.php" method="post" enctype="multipart/form-data">
@@ -473,7 +528,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Modelo</th>
+                        <th>Modelo </th>
                         <th>IMEI</th>
                         <th>Descrição do Problema</th>
                         <th>Imagens</th>
@@ -486,6 +541,69 @@
             <button type="button" class="btn btn-add" onclick="adicionarEquipamento()">Adicionar Equipamento</button>
         </div>
 
+
+    <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+        <input type="checkbox" id="aceite_termos" name="aceite_termos" required disabled title="Você precisa ler os termos antes de marcar">
+        <label for="aceite_termos" style="margin: 0; color: #fbfbfb;">
+            Você concorda com os <span id="link-termos" style="color: #b3d5ff; text-decoration: underline; cursor: pointer; font-weight: bold;">Termos de Manutenção</span>
+        </label>
+    </div>
+
+
+<div id="modal-termos" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>Termos de Manutenção e Tabela de Preços</h3>
+            <button type="button" class="btn-close" onclick="fecharTermos()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Informamos que os valores apresentados seguem a nossa tabela vigente para manutenções de equipamentos fora do período de garantia.</p>
+            
+            <p style="font-size: 0.9em; background: #fff3cd; padding: 10px; border-radius: 5px; color: #856404;">
+                <strong>Ressaltamos:</strong> Este valor é destinado à execução do reparo e validação técnica. Caso algum equipamento seja diagnosticado como <strong>sem possibilidade de conserto (PT)</strong> após a análise laboratorial, o valor correspondente será integralmente abatido ou descontado do faturamento final, não gerando custos de manutenção para o item em questão.
+            </p>
+
+            <table class="tabela-precos">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Descrição do Equipamento</th>
+                        <th>Categoria</th>
+                        <th>Valor (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>2</td><td>Assistência Técnica VL06 CAN BT</td><td>Manutenção</td><td>103.00</td></tr>
+                    <tr><td>3</td><td>Assistência Técnica VL06 FULL</td><td>Manutenção</td><td>100.00</td></tr>
+                    <tr><td>4</td><td>Assistência Técnica VL08 FULL</td><td>Manutenção</td><td>140.00</td></tr>
+                    <tr><td>5</td><td>Assistência Técnica VL08 ECO</td><td>Manutenção</td><td>120.00</td></tr>
+                    <tr><td>6</td><td>Assistência Técnica VL12</td><td>Manutenção</td><td>170.00</td></tr>
+                    <tr><td>7</td><td>Assistência Técnica VC07</td><td>Manutenção</td><td>235.00</td></tr>
+                    <tr><td>8</td><td>Assistência Técnica VL08 MID</td><td>Manutenção</td><td>125.00</td></tr>
+                    <tr><td>9</td><td>Assistência Técnica MAVUSB</td><td>Manutenção</td><td>80.00</td></tr>
+                    <tr><td>10</td><td>Assistência Técnica Mavusb - Cabo de programação</td><td>Manutenção</td><td>80.00</td></tr>
+                    <tr><td>11</td><td>Assistência Técnica Simulador Can</td><td>Manutenção</td><td>500.00</td></tr>
+                    <tr><td>12</td><td>Assistência Técnica JM VL 01</td><td>Manutenção</td><td>65.50</td></tr>
+                    <tr><td>13</td><td>Assistência Técnica JM VL03</td><td>Manutenção</td><td>29.50</td></tr>
+                    <tr><td>14</td><td>Assistência Técnica JC 400</td><td>Manutenção</td><td>115.50</td></tr>
+                    <tr><td>15</td><td>Assistência Técnica JC 450 - Terminal de Dados</td><td>Manutenção</td><td>192.50</td></tr>
+                    <tr><td>16</td><td>Assistência Técnica CD02 - Camera DMS JC450</td><td>Manutenção</td><td>65.50</td></tr>
+                    <tr><td>17</td><td>Assistência Técnica C102 - Camera AHD USB JC450</td><td>Manutenção</td><td>29.50</td></tr>
+                    <tr><td>18</td><td>Assistência Técnica CE02 - Camera IP67 (JC450)</td><td>Manutenção</td><td>28.50</td></tr>
+                    <tr><td>19</td><td>Assistência Técnica JC 170 (JC400)</td><td>Manutenção</td><td>55.50</td></tr>
+                    <tr><td>20</td><td>Assistência Técnica DMS 400D</td><td>Manutenção</td><td>67.50</td></tr>
+                    <tr><td>21</td><td>ART - Atualização e Testes</td><td>Manutenção</td><td>50.00</td></tr>
+                    <tr><td>23</td><td>Assistência Técnica JC 400AD</td><td>Manutenção</td><td>115.50</td></tr>
+                    <tr style="background-color: #ffeaea; font-weight: bold;"><td>24</td><td>PT - Produto sem conserto</td><td>Reparo</td><td>0.00</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-pdf" onclick="fecharTermos()">Entendi e Li os Termos</button>
+        </div>
+    </div>
+</div>
+
         <div class="btn-group">
             <button type="submit" name="enviar_email" class="btn btn-submit">Enviar por E-mail</button>
             <button type="submit" name="exportar_pdf" class="btn btn-pdf">Exportar PDF</button>
@@ -495,8 +613,8 @@
 
 <script>
     let equipamentoIndex = 0;
+    let termosLidos = false;
 
-    // --- NOVAS LISTAS DE OPÇÕES ---
     const OPCOES_TECNICO = {
         'JimiIoT Brasil': ['Tainara','José Eduardo','Miguel','Vinicius','Jonas','Pedro'],
         'Akroz Telematics': ['Leonardo Dias', 'Mateus Azevedo', 'Ellen Fontes', 'Vinicius Ferraz']
@@ -506,12 +624,42 @@
         'JimiIoT Brasil': ['IP67', 'JC170', 'JC181', 'JC200', 'JC400', 'JC400AD', 'JC450', 'JC371', 'VL01', 'VL02', 'VL03', 'LL01', 'LL303'],
         'Akroz Telematics': ['VL06', 'VC07', 'VL08','VL11', 'VL12', 'VCONE','AG600']
     };
-    // --------------------------------
 
-    // Função de utilidade para atualizar o texto do label de arquivo
+    const MAX_SIZE_BYTES = 20 * 1024 * 1024;
+    const MAX_SIZE_MB = 20;
+
+    function abrirTermos() {
+        document.getElementById('modal-termos').style.display = 'flex';
+        termosLidos = true;
+        document.getElementById('aceite_termos').disabled = false;
+    }
+
+    function fecharTermos() {
+        document.getElementById('modal-termos').style.display = 'none';
+    }
+
+    function isFileTooLarge(files) {
+        if (!files || files.length === 0) return false;
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].size > MAX_SIZE_BYTES) return true;
+        }
+        return false;
+    }
+
     function updateFileName(input, fileListId, labelId, placeholder) {
         const fileListDiv = document.getElementById(fileListId);
         const label = document.getElementById(labelId);
+        
+        if (isFileTooLarge(input.files)) {
+            alert(`Erro: Um ou mais arquivos excedem o limite de ${MAX_SIZE_MB} MB.`);
+            input.value = ''; 
+            label.textContent = placeholder;
+            fileListDiv.textContent = 'ERRO: Arquivo(s) excedem 20MB.';
+            fileListDiv.style.color = 'red';
+            return; 
+        }
+        
+        fileListDiv.style.color = '#007BFF'; 
         if (input.files && input.files.length > 0) {
             const files = Array.from(input.files).map(file => file.name).join(', ');
             label.textContent = `${input.files.length} arquivo(s) selecionado(s)`;
@@ -522,12 +670,10 @@
         }
     }
 
-    // --- NOVA FUNÇÃO: CARREGA E CONTROLA CAMPOS ---
     function carregarOpcoesETrocarEstado() {
         const empresa = document.getElementById('empresa_selecao').value;
         const tecnicoSelect = document.getElementById('tecnico');
         const tabelaEquipamentos = document.getElementById('tabela_equipamentos');
-
         const camposBloqueados = [
             document.getElementById('nome_cliente'), 
             document.getElementById('cnpj'), 
@@ -535,16 +681,10 @@
             document.getElementById('nf')
         ];
         
-        // Desbloqueia ou Bloqueia os campos
-        const isJimi = empresa === 'JimiIoT Brasil';
-        const isAkroz = empresa === 'Akroz Telematics';
-        const deveDesbloquear = isJimi || isAkroz;
-
-        // Desbloqueia campos do cliente e NF
+        const deveDesbloquear = (empresa === 'JimiIoT Brasil' || empresa === 'Akroz Telematics');
         camposBloqueados.forEach(campo => campo.disabled = !deveDesbloquear);
         tecnicoSelect.disabled = !deveDesbloquear;
         
-        // Limpa a lista de técnicos e insere o placeholder
         tecnicoSelect.innerHTML = '';
         const placeholderTecnico = document.createElement('option');
         placeholderTecnico.value = "";
@@ -553,7 +693,6 @@
         placeholderTecnico.selected = true;
         tecnicoSelect.appendChild(placeholderTecnico);
 
-        // Popula a lista de Técnicos
         if (deveDesbloquear) {
             OPCOES_TECNICO[empresa].forEach(nome => {
                 const option = document.createElement('option');
@@ -563,14 +702,12 @@
             });
         }
 
-        // 3. Atualiza os modelos em todas as linhas da tabela
         const linhas = tabelaEquipamentos.getElementsByTagName('tr');
         for (let i = 0; i < linhas.length; i++) {
             const modeloSelect = linhas[i].querySelector(`[name$="[modelo]"]`);
             if (modeloSelect) {
                 modeloSelect.disabled = !deveDesbloquear;
                 modeloSelect.innerHTML = '';
-                
                 const placeholderModelo = document.createElement('option');
                 placeholderModelo.value = "";
                 placeholderModelo.textContent = deveDesbloquear ? 'Selecione o modelo' : 'Selecione a Empresa primeiro';
@@ -589,15 +726,11 @@
             }
         }
     }
-    // --------------------------------
 
-    // Função para adicionar uma nova linha de equipamento
     function adicionarEquipamento() {
         const tabela = document.getElementById('tabela_equipamentos');
         const novaLinha = tabela.insertRow();
         novaLinha.id = 'equipamento-' + equipamentoIndex;
-        
-        // Verifica a empresa selecionada para configurar o SELECT
         const empresa = document.getElementById('empresa_selecao').value;
         const deveDesbloquear = (empresa === 'JimiIoT Brasil' || empresa === 'Akroz Telematics');
         const opcoesModelos = deveDesbloquear ? OPCOES_MODELO[empresa] : [];
@@ -609,98 +742,64 @@
             optionsHTML += `<option value="${modelo}">${modelo}</option>`;
         });
 
-
         novaLinha.innerHTML = `
-            <td>
-                <select name="equipamentos[${equipamentoIndex}][modelo]" id="modelo-${equipamentoIndex}" required ${disabledAttr}>
-                    ${optionsHTML}
-                </select>
-            </td>
+            <td><select name="equipamentos[${equipamentoIndex}][modelo]" id="modelo-${equipamentoIndex}" required ${disabledAttr}>${optionsHTML}</select></td>
             <td><input type="text" name="equipamentos[${equipamentoIndex}][imei]" required></td>
             <td><textarea name="equipamentos[${equipamentoIndex}][problema]" rows="2" required></textarea></td>
-            
             <td class="file-cell">
-                <label for="imagens-${equipamentoIndex}" class="custom-file-label" id="imagens-label-${equipamentoIndex}">
-                    Selecione ou arraste seus arquivos aqui!
-                </label>
-                <input type="file" 
-                       id="imagens-${equipamentoIndex}" 
-                       name="equipamentos[${equipamentoIndex}][imagens][]" 
-                       accept="image/*" 
-                       multiple
-                       class="hidden-file-input">
+                <label for="imagens-${equipamentoIndex}" class="custom-file-label" id="imagens-label-${equipamentoIndex}">Selecione ou arraste seus arquivos aqui!</label>
+                <input type="file" id="imagens-${equipamentoIndex}" name="equipamentos[${equipamentoIndex}][imagens][]" accept="image/*" multiple class="hidden-file-input">
                 <div id="file-list-${equipamentoIndex}" class="file-list"></div>
             </td>
-            
-            <td>
-                <button type="button" class="btn btn-remove" onclick="removerEquipamento('equipamento-${equipamentoIndex}')">Excluir</button>
-            </td>
+            <td><button type="button" class="btn btn-remove" onclick="removerEquipamento('equipamento-${equipamentoIndex}')">Excluir</button></td>
         `;
         
-                const currentEquipamentoIndex = equipamentoIndex; 
-
-        
+        const currentIdx = equipamentoIndex;
         equipamentoIndex++; 
 
-        // Procura o elemento fileInput usando o ID exclusivo DENTRO da linha
-        const fileInput = novaLinha.querySelector(`#imagens-${currentEquipamentoIndex}`);
-        
+        const fileInput = novaLinha.querySelector(`#imagens-${currentIdx}`);
         if (fileInput) {
-            fileInput.addEventListener('change', () => updateFileName(
-                fileInput, 
-                `file-list-${currentEquipamentoIndex}`, 
-                `imagens-label-${currentEquipamentoIndex}`, 
-                "Selecione ou arraste seus arquivos aqui!"
-            ));
+            fileInput.addEventListener('change', () => updateFileName(fileInput, `file-list-${currentIdx}`, `imagens-label-${currentIdx}`, "Selecione ou arraste seus arquivos aqui!"));
         }
     } 
 
-
-    // Função para remover uma linha de equipamento
     function removerEquipamento(id) {
         const tabelaBody = document.getElementById('tabela_equipamentos');
-        const linhas = tabelaBody.getElementsByTagName('tr');
-
-        if (linhas.length === 1) {
+        if (tabelaBody.getElementsByTagName('tr').length === 1) {
             alert("O formulário deve ter no mínimo um equipamento listado.");
             return;
         }
-        
         const linha = document.getElementById(id);
-        if (linha) {
-            linha.remove();
+        if (linha) linha.remove();
+    }
+
+    window.onload = function() {
+        adicionarEquipamento();
+        const nfInput = document.getElementById('nf');
+        if (nfInput) {
+            nfInput.addEventListener('change', () => updateFileName(nfInput, 'nf-file-list', 'nf-label', "Clique para selecionar o PDF da Nota Fiscal!"));
         }
-    }
+        document.getElementById('empresa_selecao').addEventListener('change', carregarOpcoesETrocarEstado);
+        document.getElementById('link-termos').addEventListener('click', abrirTermos);
+        carregarOpcoesETrocarEstado(); 
+    };
 
-    // Event listeners no carregamento da página
-// Event listeners no carregamento da página
-window.onload = function() {
-    adicionarEquipamento(); // Adiciona a primeira linha (bloqueada)
-    
-    // Inicializa o listener para a NF com os IDs CORRETOS
-    const nfInput = document.getElementById('nf');
-    
-    if (nfInput) {
-        nfInput.addEventListener('change', () => updateFileName(
-            nfInput, 
-            'nf-file-list', 
-            'nf-label', 
-            "Clique para selecionar o PDF da Nota Fiscal!" // Novo placeholder
-        ));
-    }
-
-    // --- LISTENER: REAGE À MUDANÇA DA EMPRESA ---
-    document.getElementById('empresa_selecao').addEventListener('change', carregarOpcoesETrocarEstado);
-
-    // Bloqueia campos no início (garante que só a seleção da empresa funcione)
-    carregarOpcoesETrocarEstado(); 
-};
-
-    // Script para o envio do formulário via AJAX
     document.getElementById('ordem-servico-form').addEventListener('submit', function(event) {
-        // ... (Mantenha o seu bloco de envio AJAX aqui) ...
         const clickedButton = event.submitter;
         const loadingOverlay = document.getElementById('loading-overlay');
+        const checkboxAceite = document.getElementById('aceite_termos');
+
+        if (!termosLidos) {
+            alert("Por favor, clique no link 'Termos de Manutenção' para ler os termos antes de prosseguir.");
+            event.preventDefault();
+            return;
+        }
+
+        if (!checkboxAceite.checked) {
+            alert("Você deve marcar a caixa confirmando que concorda com os termos para continuar.");
+            event.preventDefault();
+            return;
+        }
 
         if (clickedButton && clickedButton.name === 'enviar_email') {
             const nfInput = document.getElementById('nf');
@@ -720,19 +819,14 @@ window.onload = function() {
                 method: 'POST',
                 body: formData
             })
-            .then(response => {
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    return response.json();
-                } else {
-                    throw new TypeError('Resposta do servidor não é JSON. Talvez o PHP tenha gerado um erro.');
-                }
-            })
+            .then(response => response.json())
             .then(data => {
                 loadingOverlay.style.display = 'none';
                 if (data.status === 'success') {
                     alert(data.message);
                     this.reset();
+                    termosLidos = false;
+                    checkboxAceite.disabled = true;
                     equipamentoIndex = 0; 
                     document.getElementById('tabela_equipamentos').innerHTML = '';
                     adicionarEquipamento();
@@ -742,52 +836,10 @@ window.onload = function() {
             })
             .catch(error => {
                 loadingOverlay.style.display = 'none';
-                console.error('Erro:', error);
                 alert('Ocorreu um erro ao enviar. Por favor, tente novamente.');
             });
         }
     });
-
-function updateFileName(input, fileListId, labelId, placeholder) {
-    const fileListDiv = document.getElementById(fileListId);
-    const label = document.getElementById(labelId);
-    
-    
-    if (isFileTooLarge(input.files)) {
-        alert(`Erro: Um ou mais arquivos excedem o limite de ${MAX_SIZE_MB} MB. Por favor, remova os arquivos grandes.`);
-        
-        
-        input.value = ''; 
-        label.textContent = placeholder;
-        fileListDiv.textContent = 'ERRO: Arquivo(s) excedem 20MB.';
-        fileListDiv.style.color = 'red';
-        return; 
-    }
-    
-    fileListDiv.style.color = '#007BFF'; 
-    if (input.files && input.files.length > 0) {
-        const files = Array.from(input.files).map(file => file.name).join(', ');
-        label.textContent = `${input.files.length} arquivo(s) selecionado(s)`;
-        fileListDiv.textContent = files;
-    } else {
-        label.textContent = placeholder;
-        fileListDiv.textContent = '';
-    }
-}
-
-const MAX_SIZE_BYTES = 20 * 1024 * 1024; // 20MB em bytes
-const MAX_SIZE_MB = 20;
-
-function isFileTooLarge(files) {
-    if (!files || files.length === 0) return false;
-    
-    for (let i = 0; i < files.length; i++) {
-        if (files[i].size > MAX_SIZE_BYTES) {
-            return true; // Arquivo excede o limite
-        }
-    }
-    return false; // Todos os arquivos dentro do limite
-}
 </script>
 
 </body>
