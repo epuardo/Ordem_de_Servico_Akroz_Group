@@ -186,54 +186,38 @@ function gerarConteudoHTML($dados, $arquivos, $isPdf = false, $caminho_logo = nu
 
 
 
-        <div class="section">
-
+       <div class="section">
             <h3>Informações dos Equipamentos</h3>
-
             <table class="equipamento-table">
-
                 <thead>
-
                     <tr>
-
                         <th>Modelo</th>
-
                         <th>IMEI</th>
-
                         <th>Descrição do Problema</th>
-
                     </tr>
-
                 </thead>
-
                 <tbody>
-
                     <?php if (!empty($dados['equipamentos'])): ?>
-
                         <?php foreach ($dados['equipamentos'] as $eq): ?>
-
                             <tr>
-
                                 <td><?= htmlspecialchars($eq['modelo']) ?></td>
-
                                 <td><?= htmlspecialchars($eq['imei']) ?></td>
-
                                 <td><?= nl2br(htmlspecialchars($eq['problema'])) ?></td>
-
                             </tr>
-
                         <?php endforeach; ?>
-
                     <?php else: ?>
-
                         <tr><td colspan="3">Nenhum equipamento listado.</td></tr>
-
                     <?php endif; ?>
-
                 </tbody>
-
+                <?php if (!empty($dados['equipamentos'])): ?>
+                <tfoot>
+                    <tr style="background-color: #f2f2f2; font-weight: bold;">
+                        <td colspan="2" style="text-align: right;">Total de Equipamentos Enviados:</td>
+                        <td style="text-align: left;"><?= count($dados['equipamentos']) ?></td>
+                    </tr>
+                </tfoot>
+                <?php endif; ?>
             </table>
-
         </div>
 
         
@@ -444,7 +428,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             }
 
-            
+            if (!empty($dados['equipamentos'])) {
+    // 1. Criamos um "arquivo" em memória
+    $f = fopen('php://memory', 'r+');
+    
+    // 2. Adicionamos o BOM UTF-8 para o Excel reconhecer os acentos corretamente
+    fprintf($f, chr(0xEF).chr(0xBB).chr(0xBF));
+
+    // 3. Cabeçalho das colunas (separado por ponto e vírgula, padrão Brasil)
+    fputcsv($f, ['Modelo', 'IMEI', 'Descricao do Problema'], ';');
+
+    // 4. Preenchemos com os dados da tabela
+    foreach ($dados['equipamentos'] as $eq) {
+        fputcsv($f, [
+            $eq['modelo'],
+            $eq['imei'],
+            str_replace(["\r", "\n"], " ", $eq['problema']) // Remove quebras de linha para não quebrar o CSV
+        ], ';');
+    }
+
+    // 5. Voltamos para o início do "arquivo" para ler o conteúdo
+    rewind($f);
+    $csvContent = stream_get_contents($f);
+    fclose($f);
+
+    // 6. Anexa o conteúdo direto no e-mail como um arquivo .csv
+    $mail->addStringAttachment($csvContent, 'equipamentos_os.csv');
+}
 
             $mail->send();
 
