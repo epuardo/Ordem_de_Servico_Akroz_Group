@@ -66,27 +66,31 @@ function gerarConteudoHTML($dados, $arquivos, $isPdf = false, $caminho_logo = nu
 
             <h3 style="color: #17445f; border-bottom: 2px solid #17445f; padding-bottom: 5px;">Endereço para Envio das Manutenções:</h3>
 
-            <p style="margin-left: 10px; line-height: 1.5;">
+        <p style="margin-left: 20px; line-height: 1.5;">
 
-                <strong>NTC SERVICE LTDA</strong> <br>
-
-                Logradouro: Avenida Francisco Matarazzo <br>
-
-                Número: 1400 <br>
-
-                Complemento: TORRE MILANO SALA 191 <br>
-
-                Bairro: Água Branca <br>
-
-                Cidade: São Paulo <br>
-
-                UF: SP <br>
-
-                CEP: 05001100 <br>
-
-                CPF/CNPJ: 40.430.203/0001-32
-
-            </p>
+            <strong>Endereço da NF</strong> <br>
+            <strong>NTC SERVICE LTDA</strong> <br>
+            Logradouro: AVENIDA FRANCISCO MATARAZZO <br>
+            Número: 1400<br>
+            Complemento: COND 191 LETRA B ANDAR 19<br>
+            Bairro: Água Branca<br>
+            Cidade: São Paulo<br>
+            UF - SP<br>
+            CEP: 05001-903<br>
+            CNPJ: 40.430.203/0001-32<br>
+            IE: 136.134.461.116<br>
+            <br>    
+            <strong>Endereço de entrega dos equipamentos(Adicionar no campo de dados adicionais da NF):</strong> <br>
+            <strong>NTC SERVICE LTDA</strong> <br>
+            Logradouro: Avenida Mário de Andrade <br>
+            Número: 1400 <br>
+            Complemento: TORRE MILANO SALA 191 <br>
+            Bairro: Água Branca <br>
+            Cidade: São Paulo  <br>
+            UF - SP <br>
+            CEP: 01156-001 <br>
+            CPF/CNPJ: 40.430.203/0001-32
+        </p>
 
         </div>
 
